@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
+
+function DraggableElement({ tag }) {
+  const handleDragStart = (event) => {
+    event.dataTransfer.setData("text", tag);
+  };
+
+  return (
+    <div draggable onDragStart={handleDragStart}>
+      {tag.toUpperCase()}
+    </div>
+  );
+}
+
+function DropZone() {
+  const [elements, setElements] = useState([]);
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const tag = event.dataTransfer.getData("text");
+    setElements((elements) => [...elements, tag]);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  return (
+    <div onDrop={handleDrop} onDragOver={handleDragOver}>
+      {elements.map((tag, index) => React.createElement(tag, { key: index }))}
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <DraggableElement tag="h1" />
+      <DraggableElement tag="p" />
+      <DropZone />
     </div>
   );
 }
